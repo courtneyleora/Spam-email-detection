@@ -9,4 +9,18 @@ from sklearn.metrics import classification_report, confusion_matrix
 df1 = pd.read_csv("spam_train1.csv")
 df2 = pd.read_csv("spam_train2.csv")
 df = pd.concat([df1, df2])
-print(df)
+
+data = df.where((pd.notnull(df)), '')
+# print(data.info())
+# print(data.shape)
+
+
+
+data.loc[data['label'] == 'spam', 'label'] = 1
+data.loc[data['label'] == 'ham', 'label'] = 0
+
+X = data['text']
+Y = data['label']
+
+print (X)
+print (Y)
