@@ -1,0 +1,19 @@
+# Virtual Environment
+venv/
+
+# Large CSV Data Files
+*.csv
+
+# Generated PNG Visualizations
+*.png
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# macOS
+.DS_Store
