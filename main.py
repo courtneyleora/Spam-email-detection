@@ -661,6 +661,67 @@ print("  2. confusion_matrices.png - All confusion matrices")
 print("  3. roc_curves.png - ROC curves for all models")
 print("  4. metrics_heatmap.png - Detailed metrics heatmap")
 print("  5. error_analysis.png - Type I and Type II error analysis")
+
+
+# ============================================================================
+# 7. SAVE PREDICTIONS TO FILE
+# ============================================================================
+# Export predictions from the best model (SVM) to a file
+# Format: One prediction per line (0 = ham, 1 = spam)
+# ============================================================================
+
+print("\n" + "=" * 80)
+print("SAVING PREDICTIONS TO FILE...")
+print("=" * 80)
+
+# Get the best model (SVM based on F1-Score)
+best_model = results[best_model_name]["model"]
+best_predictions = results[best_model_name]["predictions"]
+
+# Save predictions for test set to a text file
+# Each line contains a single prediction: 0 (ham) or 1 (spam)
+output_filename = "predictions.txt"
+np.savetxt(output_filename, best_predictions, fmt='%d')
+print(f"\n✓ Saved test set predictions to: {output_filename}")
+print(f"  Format: One prediction per line (0 = ham, 1 = spam)")
+print(f"  Total predictions: {len(best_predictions)}")
+
+# Create a detailed results CSV file with email text and predictions
+results_df = pd.DataFrame({
+    'email_text': X_test.values,
+    'actual_label': Y_test.values,
+    'predicted_label': best_predictions,
+    'prediction': ['spam' if pred == 1 else 'ham' for pred in best_predictions],
+    'correct': Y_test.values == best_predictions
+})
+
+results_csv_filename = "detailed_predictions.csv"
+results_df.to_csv(results_csv_filename, index=False)
+print(f"✓ Saved detailed results to: {results_csv_filename}")
+print(f"  Includes: email text, actual labels, predictions, and correctness")
+
+# Save predictions for all models (comparison file)
+all_predictions_df = pd.DataFrame({
+    'email_text': X_test.values,
+    'actual_label': Y_test.values,
+})
+
+# Add predictions from each model
+for model_name, result in results.items():
+    all_predictions_df[f'{model_name}_prediction'] = result['predictions']
+
+all_predictions_filename = "all_models_predictions.csv"
+all_predictions_df.to_csv(all_predictions_filename, index=False)
+print(f"✓ Saved predictions from all models to: {all_predictions_filename}")
+
+# Summary statistics
+print(f"\n📊 Prediction Summary ({best_model_name}):")
+print(f"  Total emails predicted: {len(best_predictions)}")
+print(f"  Predicted as Ham (0): {np.sum(best_predictions == 0)} ({np.sum(best_predictions == 0)/len(best_predictions)*100:.2f}%)")
+print(f"  Predicted as Spam (1): {np.sum(best_predictions == 1)} ({np.sum(best_predictions == 1)/len(best_predictions)*100:.2f}%)")
+print(f"  Correct predictions: {np.sum(Y_test.values == best_predictions)} ({accuracy_score(Y_test, best_predictions)*100:.2f}%)")
+print(f"  Incorrect predictions: {np.sum(Y_test.values != best_predictions)}")
+
 print("\n" + "=" * 80)
 
 # ============================================================================

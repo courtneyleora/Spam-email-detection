@@ -7,6 +7,11 @@ venv/
 # Generated PNG Visualizations
 *.png
 
+# Prediction Output Files
+predictions.txt
+detailed_predictions.csv
+all_models_predictions.csv
+
 # Python Cache
 __pycache__/
 *.pyc
